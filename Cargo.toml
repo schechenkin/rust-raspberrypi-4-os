@@ -1,0 +1,30 @@
+[package]
+name = "serge_os"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+[features]
+default = []
+bsp_rpi3 = []
+bsp_rpi4 = []
+
+[[bin]]
+name = "kernel"
+path = "src/main.rs"
+
+
+[lints.rust]
+
+[lints.clippy]
+# You forgot a `todo!()`!
+todo = "forbid"
+# This can only happen by mistake in Rustlings.
+empty_loop = "forbid"
+# No infinite loops are needed in Rustlings.
+infinite_loop = "deny"
+# You shouldn't leak memory while still learning Rust!
+mem_forget = "deny"
+# Currently, there are no disallowed methods. This line avoids problems when developing Rustlings.
+disallowed_methods = "allow"

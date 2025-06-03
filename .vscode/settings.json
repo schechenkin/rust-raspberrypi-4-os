@@ -1,0 +1,11 @@
+{
+    "editor.formatOnSave": true,
+    "editor.rulers": [
+        100
+    ],
+    "rust-analyzer.cargo.target": "aarch64-unknown-none",
+    "rust-analyzer.cargo.features": [
+        "bsp_rpi4"
+    ],
+    "rust-analyzer.checkOnSave": true
+}
