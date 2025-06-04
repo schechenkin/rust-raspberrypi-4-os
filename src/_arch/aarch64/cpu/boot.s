@@ -27,6 +27,11 @@
 // fn _start()
 //------------------------------------------------------------------------------
 _start:
+	#Enable FPEN bitsMore actions
+	mrs x7, cpacr_el1
+	orr x7, x7, #(3 << 20)	
+	msr cpacr_el1, x7
+	
 	// Only proceed on the boot core. Park it otherwise.
 	mrs	x0, MPIDR_EL1
 	and	x0, x0, {CONST_CORE_ID_MASK}

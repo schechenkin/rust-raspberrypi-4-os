@@ -1,4 +1,7 @@
 #[path = "raspberrypi/cpu.rs"]
 mod raspberrypi;
 
-pub use raspberrypi::*;
+#[path = "raspberrypi/console.rs"]
+mod console;
+
+pub use console::*;

@@ -33,10 +33,10 @@ tasks:
     cmds:
       - task: build
       - task: objcopy
-      - qemu-system-aarch64 -M raspi4b -d in_asm -display none -kernel kernel8.img
+      - qemu-system-aarch64 -M raspi4b -serial stdio -display none -kernel kernel8.img
     
   qemu-docker:
     cmds:
       - task: build
       - task: objcopy
-      - docker run -t --rm -v /mnt/c/Users/schechenkin/Projects/rust/rust-rp4/serge_os:/work/tutorial -w /work/tutorial -i u007d/osdev-utils-rpi4:2023.09 qemu-system-aarch64 -M raspi4 -d in_asm -display none -kernel kernel8.img
+      - docker run -t --rm -v /mnt/c/Users/schechenkin/Projects/rust/rust-rp4/serge_os:/work/tutorial -w /work/tutorial -i u007d/osdev-utils-rpi4:2023.09 qemu-system-aarch64 -M raspi4 -serial stdio -display none -kernel kernel8.img

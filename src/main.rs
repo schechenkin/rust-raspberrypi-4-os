@@ -3,8 +3,10 @@
 
 mod boot;
 mod bsp;
+mod console;
 mod cpu;
-use core::panic::PanicInfo;
+mod panic_wait;
+mod print;
 
 /// Early init code.
 ///
@@ -12,10 +14,7 @@ use core::panic::PanicInfo;
 ///
 /// - Only a single core must be active and running this function.
 unsafe fn kernel_init() -> ! {
-    panic!()
-}
+    print!("Hello from Rust!");
 
-#[panic_handler]
-fn panic(_: &PanicInfo) -> ! {
-    cpu::wait_forever()
+    panic!("Stopping here.")
 }

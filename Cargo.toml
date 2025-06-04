@@ -6,7 +6,7 @@ edition = "2024"
 [dependencies]
 # Platform specific dependencies
 [target.'cfg(target_arch = "aarch64")'.dependencies]
-aarch64-cpu = { version = "9.x.x" }
+aarch64-cpu = { version = "10.0.0" }
 
 [features]
 default = []
