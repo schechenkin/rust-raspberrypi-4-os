@@ -1,7 +1,5 @@
-#[path = "raspberrypi/cpu.rs"]
 mod raspberrypi;
 
-#[path = "raspberrypi/console.rs"]
-mod console;
+mod device_driver;
 
-pub use console::*;
+pub use raspberrypi::*;

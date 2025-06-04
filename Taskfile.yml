@@ -21,22 +21,18 @@ tasks:
     cmds:
       - cargo size --release
 
-  objdump2:
-    cmds:
-      - objdump -d target/aarch64-unknown-none/release/kernel
-
   objcopy:
     cmds:
-      - rust-objcopy --strip-all -O binary target/aarch64-unknown-none/release/kernel kernel8.img
+      - rust-objcopy --strip-all -O binary target/aarch64-unknown-none/release/kernel target/aarch64-unknown-none/release/kernel8.img
 
   qemu:
     cmds:
       - task: build
       - task: objcopy
-      - qemu-system-aarch64 -M raspi4b -serial stdio -display none -kernel kernel8.img
+      - qemu-system-aarch64 -M raspi4b -serial stdio -display none -kernel target/aarch64-unknown-none/release/kernel8.img
     
   qemu-docker:
     cmds:
       - task: build
       - task: objcopy
-      - docker run -t --rm -v /mnt/c/Users/schechenkin/Projects/rust/rust-rp4/serge_os:/work/tutorial -w /work/tutorial -i u007d/osdev-utils-rpi4:2023.09 qemu-system-aarch64 -M raspi4 -serial stdio -display none -kernel kernel8.img
+      - docker run -t --rm -v /mnt/c/Users/schechenkin/Projects/rust/rust-rp4/serge_os:/work/tutorial -w /work/tutorial -i u007d/osdev-utils-rpi4:2023.09 qemu-system-aarch64 -M raspi4 -serial stdio -display none -kernel target/aarch64-unknown-none/release/kernel8.img

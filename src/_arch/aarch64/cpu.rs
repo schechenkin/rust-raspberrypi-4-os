@@ -17,6 +17,8 @@ use aarch64_cpu::asm;
 // Public Code
 //--------------------------------------------------------------------------------------------------
 
+pub use asm::nop;
+
 /// Pause execution on the core.
 #[inline(always)]
 pub fn wait_forever() -> ! {

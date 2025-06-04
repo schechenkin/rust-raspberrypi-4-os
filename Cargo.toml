@@ -7,15 +7,18 @@ edition = "2024"
 # Platform specific dependencies
 [target.'cfg(target_arch = "aarch64")'.dependencies]
 aarch64-cpu = { version = "10.0.0" }
+tock-registers = { version = "0.8.x", default-features = false, features = ["register_types"], optional = true }
 
 [features]
-default = []
+default = ["tock-registers"]
 bsp_rpi3 = []
 bsp_rpi4 = []
 
 [[bin]]
 name = "kernel"
 path = "src/main.rs"
+test = false
+bench = false
 
 
 [lints.rust]
