@@ -42,3 +42,9 @@ tasks:
     - task: build
     - task: objcopy
     - docker run -t --rm -v ./work/tutorial -w /work/tutorial -i --privileged -v /dev:/dev -v ./common:/work/common u007d/osdev-utils-rpi4:2023.09 ruby ../common/serial/miniterm.rb /dev/ttyUSB0
+
+  chainboot:
+    cmds:
+    - task: build
+    - task: objcopy
+    - docker run -t --rm -v .:/work/tutorial -w /work/tutorial -i --privileged -v /dev:/dev -v ./common:/work/common u007d/osdev-utils-rpi4:2023.09 ruby ../common/serial/minipush.rb /dev/ttyUSB0 demo_payload_rpi4.img
