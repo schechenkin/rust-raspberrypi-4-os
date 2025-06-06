@@ -155,8 +155,6 @@ impl GPIOInner {
             .GPFSEL1
             .modify(GPFSEL1::FSEL15::AltFunc0 + GPFSEL1::FSEL14::AltFunc0);
 
-        // Disable pull-up/down on pins 14 and 15.
-
         self.disable_pud_14_15_bcm2711();
     }
 }

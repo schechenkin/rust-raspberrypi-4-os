@@ -7,10 +7,6 @@
 use crate::console;
 use core::fmt;
 
-//--------------------------------------------------------------------------------------------------
-// Public Code
-//--------------------------------------------------------------------------------------------------
-
 #[doc(hidden)]
 pub fn _print(args: fmt::Arguments) {
     console::console().write_fmt(args).unwrap();
@@ -31,4 +27,45 @@ macro_rules! print {
 macro_rules! println {
     ($fmt:expr) => ($crate::print!(concat!($fmt, "\n")));
     ($fmt:expr, $($arg:tt)*) => ($crate::print!(concat!($fmt, "\n"), $($arg)*));
+}
+
+//--------------------------------------------------------------------------------------------------
+// Public Code
+//--------------------------------------------------------------------------------------------------
+/// Prints an info, with a newline.
+#[macro_export]
+macro_rules! info {
+    ($string:expr) => {{
+        let timestamp = $crate::time::time_manager().uptime();
+
+        $crate::println!(
+            concat!("[Info  {:>3}.{:06}] ", $string),
+            timestamp.as_secs(),
+            timestamp.subsec_micros()
+        );
+    }};
+    ($($arg:tt)*) => {{
+        let timestamp = $crate::time::time_manager().uptime();
+        $crate::print!("[Info  {:>3}.{:06}] ", timestamp.as_secs(),timestamp.subsec_micros());
+        $crate::println!($($arg)*);
+    }};
+}
+
+/// Prints a warning, with a newline.
+#[macro_export]
+macro_rules! warn {
+    ($string:expr) => {{
+        let timestamp = $crate::time::time_manager().uptime();
+
+        $crate::println!(
+            concat!("[Warn  {:>3}.{:06}] ", $string),
+            timestamp.as_secs(),
+            timestamp.subsec_micros()
+        );
+    }};
+    ($($arg:tt)*) => {{
+        let timestamp = $crate::time::time_manager().uptime();
+        $crate::print!("[Warn  {:>3}.{:06}] ", timestamp.as_secs(),timestamp.subsec_micros());
+        $crate::println!($($arg)*);
+    }};
 }
