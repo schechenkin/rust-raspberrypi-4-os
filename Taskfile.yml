@@ -11,13 +11,7 @@ tasks:
 
   build:
     cmds:
-      - cargo build --{{.BUILD_TYPE}}
-    requires:
-      vars: [BUILD_TYPE]
-
-  build-debug:
-    cmds:
-      - cargo build
+      - cargo build --release
 
   objdump:
     cmds:
@@ -41,21 +35,20 @@ tasks:
       - task: objcopy
         vars: 
           BUILD_TYPE: release
-      - qemu-img resize target/aarch64-unknown-none/{{.BUILD_TYPE}}/kernel8.img 65536
       - qemu-system-aarch64 -M raspi4b -serial stdio -display none -kernel target/aarch64-unknown-none/{{.BUILD_TYPE}}/kernel8.img
     vars:
       BUILD_TYPE: release
 
   qemu-gdb:
     cmds:
-      - task: build-debug
+      - cargo build --profile=release-with-debug
       - task: objcopy
         vars: 
-          BUILD_TYPE: debug
+          BUILD_TYPE: release-with-debug
       - qemu-img resize target/aarch64-unknown-none/{{.BUILD_TYPE}}/kernel8.img 65536
       - qemu-system-aarch64 -s -S -M raspi4b -serial stdio -display none -kernel target/aarch64-unknown-none/{{.BUILD_TYPE}}/kernel8.img
     vars:
-      BUILD_TYPE: debug
+      BUILD_TYPE: release-with-debug
 
   gdb:
     cmds:

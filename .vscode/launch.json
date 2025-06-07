@@ -5,7 +5,7 @@
             "name": "Debug aarch64 QEMU",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/target/aarch64-unknown-none/debug/kernel",
+            "program": "${workspaceFolder}/target/aarch64-unknown-none/release-with-debug/kernel",
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "externalConsole": false,
@@ -18,7 +18,7 @@
                     "ignoreFailures": true
                 },
                 {
-                    "text": "file ${workspaceFolder}/target/aarch64-unknown-none/debug/kernel",
+                    "text": "file ${workspaceFolder}/target/aarch64-unknown-none/release-with-debug/kernel",
                     "ignoreFailures": true
                 },
                 {
