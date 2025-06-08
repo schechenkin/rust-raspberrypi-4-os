@@ -50,10 +50,6 @@ tasks:
     vars:
       BUILD_TYPE: release-with-debug
 
-  gdb:
-    cmds:
-      - gdb-multiarch -q target/aarch64-unknown-none/debug/kernel
-
   gdb-docker:
     cmds:
       - docker run -t --rm -v .:/work/tutorial -w /work/tutorial -i --network host u007d/osdev-utils-rpi4:2023.09 gdb-multiarch -q target/aarch64-unknown-none/debug/kernel

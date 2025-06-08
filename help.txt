@@ -1,0 +1,1 @@
+find $(rustc --print sysroot) -name "gdb_load_rust_pretty_printers.py"

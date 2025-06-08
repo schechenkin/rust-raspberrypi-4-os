@@ -26,6 +26,7 @@ bench = false
 [profile.release-with-debug]
 inherits = "release"
 debug = true
+opt-level = 0
 
 
 [lints.rust]
