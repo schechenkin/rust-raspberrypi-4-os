@@ -69,3 +69,21 @@ macro_rules! warn {
         $crate::println!($($arg)*);
     }};
 }
+
+#[macro_export]
+macro_rules! debug {
+    ($string:expr) => {{
+        let timestamp = $crate::time::time_manager().uptime();
+
+        $crate::println!(
+            concat!("[Dbg   {:>3}.{:06}] ", $string),
+            timestamp.as_secs(),
+            timestamp.subsec_micros()
+        );
+    }};
+    ($($arg:tt)*) => {{
+        let timestamp = $crate::time::time_manager().uptime();
+        $crate::print!("[Dbg   {:>3}.{:06}] ", timestamp.as_secs(),timestamp.subsec_micros());
+        $crate::println!($($arg)*);
+    }};
+}
