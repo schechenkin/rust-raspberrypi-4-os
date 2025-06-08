@@ -23,19 +23,52 @@ tasks:
 
   objcopy:
     cmds:
-      - rust-objcopy --strip-all -O binary target/aarch64-unknown-none/release/kernel target/aarch64-unknown-none/release/kernel8.img
-
+      - rust-objcopy --strip-all -O binary target/aarch64-unknown-none/{{.BUILD_TYPE}}/kernel target/aarch64-unknown-none/{{.BUILD_TYPE}}/kernel8.img
+    requires:
+      vars: [BUILD_TYPE]
+  
   qemu:
     cmds:
       - task: build
+        vars: 
+          BUILD_TYPE: release
       - task: objcopy
-      - qemu-system-aarch64 -M raspi4b -serial stdio -display none -kernel target/aarch64-unknown-none/release/kernel8.img
+        vars: 
+          BUILD_TYPE: release
+      - qemu-system-aarch64 -M raspi4b -serial stdio -display none -kernel target/aarch64-unknown-none/{{.BUILD_TYPE}}/kernel8.img
+    vars:
+      BUILD_TYPE: release
+
+  qemu-gdb:
+    cmds:
+      - cargo build --profile=release-with-debug
+      - task: objcopy
+        vars: 
+          BUILD_TYPE: release-with-debug
+      - qemu-img resize target/aarch64-unknown-none/{{.BUILD_TYPE}}/kernel8.img 65536
+      - qemu-system-aarch64 -s -S -M raspi4b -serial stdio -display none -kernel target/aarch64-unknown-none/{{.BUILD_TYPE}}/kernel8.img
+    vars:
+      BUILD_TYPE: release-with-debug
+
+  gdb:
+    cmds:
+      - gdb-multiarch -q target/aarch64-unknown-none/debug/kernel
+
+  gdb-docker:
+    cmds:
+      - docker run -t --rm -v .:/work/tutorial -w /work/tutorial -i --network host u007d/osdev-utils-rpi4:2023.09 gdb-multiarch -q target/aarch64-unknown-none/debug/kernel
     
   qemu-docker:
     cmds:
       - task: build
+        vars: 
+          BUILD_TYPE: release
       - task: objcopy
-      - docker run -t --rm -v .:/work/tutorial -w /work/tutorial -i u007d/osdev-utils-rpi4:2023.09 qemu-system-aarch64 -M raspi4 -serial stdio -display none -kernel target/aarch64-unknown-none/release/kernel8.img
+        vars: 
+          BUILD_TYPE: release
+      - docker run -t --rm -v .:/work/tutorial -w /work/tutorial -i u007d/osdev-utils-rpi4:2023.09 qemu-system-aarch64 -M raspi4 -serial stdio -display none -kernel target/aarch64-unknown-none/{{.BUILD_TYPE}}}/kernel8.img
+    vars:
+      build_type: release
 
   miniterm:
     cmds:
@@ -46,5 +79,9 @@ tasks:
   chainboot:
     cmds:
     - task: build
+      vars: 
+          BUILD_TYPE: release
     - task: objcopy
+      vars: 
+        BUILD_TYPE: release
     - docker run -t --rm -v .:/work/tutorial -w /work/tutorial -i --privileged -v /dev:/dev -v ./common:/work/common u007d/osdev-utils-rpi4:2023.09 ruby ../common/serial/minipush.rb /dev/ttyUSB0 demo_payload_rpi4.img

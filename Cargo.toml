@@ -7,7 +7,9 @@ edition = "2024"
 # Platform specific dependencies
 [target.'cfg(target_arch = "aarch64")'.dependencies]
 aarch64-cpu = { version = "10.0.0" }
-tock-registers = { version = "0.9.x", default-features = false, features = ["register_types"], optional = true }
+tock-registers = { version = "0.9.x", default-features = false, features = [
+    "register_types",
+], optional = true }
 ansi_rgb = { version = "0.2.0" }
 
 [features]
@@ -20,6 +22,10 @@ name = "kernel"
 path = "src/main.rs"
 test = false
 bench = false
+
+[profile.release-with-debug]
+inherits = "release"
+debug = true
 
 
 [lints.rust]
