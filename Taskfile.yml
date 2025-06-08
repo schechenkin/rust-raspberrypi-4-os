@@ -23,7 +23,7 @@ tasks:
 
   objcopy:
     cmds:
-      - rust-objcopy --strip-all -O binary target/aarch64-unknown-none/{{.BUILD_TYPE}}/kernel target/aarch64-unknown-none/{{.BUILD_TYPE}}/kernel8.img
+      - rust-objcopy -O binary target/aarch64-unknown-none/{{.BUILD_TYPE}}/kernel target/aarch64-unknown-none/{{.BUILD_TYPE}}/kernel8.img
     requires:
       vars: [BUILD_TYPE]
   
@@ -45,7 +45,6 @@ tasks:
       - task: objcopy
         vars: 
           BUILD_TYPE: release-with-debug
-      - qemu-img resize target/aarch64-unknown-none/{{.BUILD_TYPE}}/kernel8.img 65536
       - qemu-system-aarch64 -s -S -M raspi4b -serial stdio -display none -kernel target/aarch64-unknown-none/{{.BUILD_TYPE}}/kernel8.img
     vars:
       BUILD_TYPE: release-with-debug

@@ -3,10 +3,12 @@
 
 mod boot;
 mod bsp;
+mod common;
 mod console;
 mod cpu;
 mod driver;
 mod exception;
+mod memory;
 mod panic_wait;
 mod print;
 mod synchronization;
@@ -21,6 +23,8 @@ use ansi_rgb::{Foreground, red};
 /// - Only a single core must be active and running this function.
 /// - The init calls in this function must appear in the correct order.
 unsafe fn kernel_init() -> ! {
+    use memory::mmu::interface::MMU;
+
     // Initialize the BSP driver subsystem.
     if let Err(x) = unsafe { bsp::driver::init() } {
         panic!("Error initializing BSP driver subsystem: {}", x);
@@ -29,6 +33,10 @@ unsafe fn kernel_init() -> ! {
     // Initialize all device drivers.
     unsafe { driver::driver_manager().init_drivers() };
     // println! is usable from here on.
+
+    if let Err(string) = unsafe { memory::mmu::mmu().enable_mmu_and_caching() } {
+        panic!("MMU: {}", string);
+    }
 
     // Transition from unsafe to safe.
     kernel_main()
@@ -45,6 +53,9 @@ fn kernel_main() -> ! {
         env!("CARGO_PKG_VERSION")
     );
     info!("Booting on: {}", bsp::board_name());
+
+    info!("MMU online. Special regions:");
+    bsp::memory::mmu::virt_mem_layout().print_layout();
 
     let (_, privilege_level) = exception::current_privilege_level();
     info!("Current privilege level: {}", privilege_level);

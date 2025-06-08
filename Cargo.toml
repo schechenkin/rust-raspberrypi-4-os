@@ -9,11 +9,11 @@ edition = "2024"
 aarch64-cpu = { version = "10.0.0" }
 tock-registers = { version = "0.9.x", default-features = false, features = [
     "register_types",
-], optional = true }
+] }
 ansi_rgb = { version = "0.2.0" }
 
 [features]
-default = ["tock-registers"]
+default = []
 bsp_rpi3 = []
 bsp_rpi4 = []
 
@@ -22,6 +22,9 @@ name = "kernel"
 path = "src/main.rs"
 test = false
 bench = false
+
+[profile.release]
+opt-level = 2
 
 [profile.release-with-debug]
 inherits = "release"
