@@ -10,7 +10,6 @@ aarch64-cpu = { version = "10.0.0" }
 tock-registers = { version = "0.9.x", default-features = false, features = [
     "register_types",
 ] }
-ansi_rgb = { version = "0.2.0" }
 
 [features]
 default = []

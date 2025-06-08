@@ -139,7 +139,8 @@ impl memory::mmu::interface::MMU for MemoryManagementUnit {
         self.set_up_mair();
 
         // Populate translation tables.
-        KERNEL_TABLES.lock(|t| t.populate_tt_entries().map_err(MMUEnableError::Other))?;
+        KERNEL_TABLES
+            .lock(|t| unsafe { t.populate_tt_entries().map_err(MMUEnableError::Other) })?;
 
         // Set the "Translation Table Base Register".
         TTBR0_EL1.set_baddr(KERNEL_TABLES.lock(|t| t.phys_base_address()));

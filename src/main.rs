@@ -14,7 +14,7 @@ mod print;
 mod synchronization;
 mod time;
 
-use ansi_rgb::{Foreground, red};
+use crate::console::interface::Write;
 
 /// Early init code.
 ///
@@ -73,6 +73,13 @@ fn kernel_main() -> ! {
 
     info!("Timer test, spinning for 1 second");
     time::time_manager().spin_for(Duration::from_secs(1));
+
+    let remapped_uart = unsafe { bsp::device_driver::PL011Uart::new(0x1FFF_1000) };
+    writeln!(
+        remapped_uart,
+        "[     !!!    ] Writing through the remapped UART at 0x1FFF_1000"
+    )
+    .unwrap();
 
     info!("Echoing input now");
 
