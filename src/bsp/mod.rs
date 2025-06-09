@@ -1,5 +1,5 @@
 mod raspberrypi;
 
-pub mod device_driver;
+mod device_driver;
 
 pub use raspberrypi::*;

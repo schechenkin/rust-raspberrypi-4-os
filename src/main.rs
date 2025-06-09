@@ -14,16 +14,23 @@ mod print;
 mod synchronization;
 mod time;
 
-use crate::console::interface::Write;
-
 /// Early init code.
 ///
 /// # Safety
 ///
 /// - Only a single core must be active and running this function.
-/// - The init calls in this function must appear in the correct order.
+/// - The init calls in this function must appear in the correct order:
+///     - MMU + Data caching must be activated at the earliest. Without it, any atomic operations,
+///       e.g. the yet-to-be-introduced spinlocks in the device drivers (which currently employ
+///       NullLocks instead of spinlocks), will fail to work (properly) on the RPi SoCs.
 unsafe fn kernel_init() -> ! {
     use memory::mmu::interface::MMU;
+
+    unsafe { exception::handling_init() };
+
+    if let Err(string) = unsafe { memory::mmu::mmu().enable_mmu_and_caching() } {
+        panic!("MMU: {}", string);
+    }
 
     // Initialize the BSP driver subsystem.
     if let Err(x) = unsafe { bsp::driver::init() } {
@@ -33,10 +40,6 @@ unsafe fn kernel_init() -> ! {
     // Initialize all device drivers.
     unsafe { driver::driver_manager().init_drivers() };
     // println! is usable from here on.
-
-    if let Err(string) = unsafe { memory::mmu::mmu().enable_mmu_and_caching() } {
-        panic!("MMU: {}", string);
-    }
 
     // Transition from unsafe to safe.
     kernel_main()
@@ -74,13 +77,28 @@ fn kernel_main() -> ! {
     info!("Timer test, spinning for 1 second");
     time::time_manager().spin_for(Duration::from_secs(1));
 
-    let remapped_uart = unsafe { bsp::device_driver::PL011Uart::new(0x1FFF_1000) };
-    writeln!(
-        remapped_uart,
-        "[     !!!    ] Writing through the remapped UART at 0x1FFF_1000"
-    )
-    .unwrap();
+    // Cause an exception by accessing a virtual address for which no translation was set up. This
+    // code accesses the address 8 GiB, which is outside the mapped address space.
+    //
+    // For demo purposes, the exception handler will catch the faulting 8 GiB address and allow
+    // execution to continue.
+    info!("");
+    info!("Trying to read from address 8 GiB...");
+    let mut big_addr: u64 = 8 * 1024 * 1024 * 1024;
+    unsafe { core::ptr::read_volatile(big_addr as *mut u64) };
 
+    info!("************************************************");
+    info!("Whoa! We recovered from a synchronous exception!");
+    info!("************************************************");
+    info!("");
+    info!("Let's try again");
+
+    // Now use address 9 GiB. The exception handler won't forgive us this time.
+    info!("Trying to read from address 9 GiB...");
+    big_addr = 9 * 1024 * 1024 * 1024;
+    unsafe { core::ptr::read_volatile(big_addr as *mut u64) };
+
+    // Will never reach here in this tutorial.
     info!("Echoing input now");
 
     // Discard any spurious received characters before going into echo mode.
